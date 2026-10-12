@@ -1,0 +1,41 @@
+{
+  "purpose": "Synthetic CPU plumbing verification only; weights are not bundled",
+  "artifacts": [
+    {
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b11564/llama-b11564-bin-ubuntu-x64.tar.gz",
+      "size": 17711083,
+      "sha256": "349c1499f28d93da836ba8c60160c2e77545f6cf30b4a038a0cf040ff0a949ef",
+      "verified_expected_sha256": "349c1499f28d93da836ba8c60160c2e77545f6cf30b4a038a0cf040ff0a949ef"
+    },
+    {
+      "url": "https://huggingface.co/Systran/faster-whisper-tiny/resolve/d90ca5fe260221311c53c58e660288d3deb8d356/config.json",
+      "size": 2249,
+      "sha256": "a73a28cdfe1c43ccc7202fa333d1f89c202477271407ae9a7f19afa52039cac8",
+      "verified_expected_sha256": null
+    },
+    {
+      "url": "https://huggingface.co/Systran/faster-whisper-tiny/resolve/d90ca5fe260221311c53c58e660288d3deb8d356/tokenizer.json",
+      "size": 2203239,
+      "sha256": "fb7b63191e9bb045082c79fd742a3106a12c99513ab30df4a0d47fa6cb6fd0ab",
+      "verified_expected_sha256": null
+    },
+    {
+      "url": "https://huggingface.co/Systran/faster-whisper-tiny/resolve/d90ca5fe260221311c53c58e660288d3deb8d356/vocabulary.txt",
+      "size": 459861,
+      "sha256": "34ce3fe1c5041027b3f8d42912270993f986dbc4bb34cf27f951e34a1e453913",
+      "verified_expected_sha256": null
+    },
+    {
+      "url": "https://huggingface.co/Systran/faster-whisper-tiny/resolve/d90ca5fe260221311c53c58e660288d3deb8d356/model.bin",
+      "size": 75538270,
+      "sha256": "dcb76c6586fc06cbdac6dd21f14cfd129cc4cdd9dce19bf4ffa62e59cbe6e6d1",
+      "verified_expected_sha256": "dcb76c6586fc06cbdac6dd21f14cfd129cc4cdd9dce19bf4ffa62e59cbe6e6d1"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/resolve/23749fefcc72300e3a2ad315e1317431b06b590a/Qwen3-0.6B-Q8_0.gguf",
+      "size": 639446688,
+      "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+      "verified_expected_sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031"
+    }
+  ]
+}

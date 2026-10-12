@@ -39,7 +39,7 @@ FFmpeg/ffprobeとPillow、以下のNotoフォントが必要です。
 - `/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc`
 - `/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc`
 
-Windows/macOS用フォント検出は未実装です。プラン生成CLIは標準Pythonで動作します。
+0.5ではWindows/Linux/macOSのNotoフォント候補を検出します（Windows実行は未検証）。明示的な通常・太字フォントパス指定にも対応します。GUIでは360p/720p/1080pを選択できます。プラン生成CLIは標準Pythonで動作します。
 字幕は下部帯へ最大3行、1行20文字を目安に配置します。文字幅の計測で安全幅を超えた場合は拒否します。
 SEは0.32秒の合成トーンで、商用効果音素材ではありません。元の最初の音声トラックへ加算します。
 
