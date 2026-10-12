@@ -113,7 +113,7 @@ class SuggestionBackend(Protocol):
 class RuleBackend:
     name = 'rules-v1'
     def suggest(self, text):
-        for word,color in [('かわいい','pink'),('残念','cyan')]:
+        for word,color in [('かわいい','pink'),('可愛い','pink'),('残念','cyan')]:
             if word in text:
                 start=text.index(word)
                 return {'emphasis':False,'color':'white','se':'none','zoom':'none','spans':[{'start':start,'end':start+len(word),'color':color,'emphasis':True}],'zoom_target':{'x':0.5,'y':0.5}}, 'Literal keyword match; no semantic AI'

@@ -10,8 +10,12 @@ from .review_html import render_review
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='Offline clipping edit-plan beta. No network; optional local FFmpeg preview.')
+    parser = argparse.ArgumentParser(description='Local clipping beta: validated edit plans, loopback AI review app and FFmpeg preview.')
     sub = parser.add_subparsers(dest='command', required=True)
+    s = sub.add_parser('serve', help='Start standalone local AI/review/render app on loopback')
+    s.add_argument('--workspace', default='clipbeta-work')
+    s.add_argument('--port', type=int, default=0)
+    s.add_argument('--no-browser', action='store_true')
     s = sub.add_parser('suggest', help='Create rule-based proposal from SRT/JSON')
     s.add_argument('input'); s.add_argument('--start', required=True); s.add_argument('--end', required=True)
     s.add_argument('--duration', required=True, help='Declared source media duration (seconds or HH:MM:SS.mmm)')
@@ -33,7 +37,10 @@ def main(argv=None):
     s.add_argument('plan'); s.add_argument('--existing'); s.add_argument('--out', required=True)
     args = parser.parse_args(argv)
     try:
-        if args.command == 'synthetic-media':
+        if args.command == 'serve':
+            from .standalone import serve
+            serve(args.workspace, args.port, not args.no_browser); return 0
+        elif args.command == 'synthetic-media':
             print(f'Created synthetic source: {synthetic_source(args.out)}'); return 0
         elif args.command == 'render':
             print(f'Rendered local preview: {render(read_json(args.plan), args.media, args.out_dir)}'); return 0
