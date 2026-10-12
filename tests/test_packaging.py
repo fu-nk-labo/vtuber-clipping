@@ -8,3 +8,6 @@ class PackageResourceTests(unittest.TestCase):
         self.assertEqual(len(rows),5)
     def test_installed_flow_asset_is_available(self):
         self.assertIn('class Flow',files('clipbeta').joinpath('web/flow.js').read_text())
+
+    def test_installed_standalone_asset_is_available(self):
+        self.assertIn("__SESSION_TOKEN__",files("clipbeta").joinpath("web/standalone.html").read_text())

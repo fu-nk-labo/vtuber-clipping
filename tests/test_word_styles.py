@@ -5,6 +5,13 @@ from clipbeta import engine as e
 from clipbeta.render import video_filter,caption_runs
 
 class WordStyleTests(unittest.TestCase):
+    def test_asr_kanji_spelling_gets_literal_word_style(self):
+        from clipbeta.engine import RuleBackend
+        text="この子は可愛いですね。"
+        style,_=RuleBackend().suggest(text)
+        self.assertEqual(style['color'],'white')
+        self.assertEqual(style['spans'],[{'start':4,'end':7,'color':'pink','emphasis':True}])
+
     def setUp(self):
         self.rows=[{'start_ms':0,'end_ms':3000,'text':'😀この子かわいいね'}]
         self.p=e.make_proposal(self.rows,0,3000,3000)
