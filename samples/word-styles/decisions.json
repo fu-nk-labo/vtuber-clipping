@@ -1,0 +1,75 @@
+{
+  "schema": "clipbeta/1",
+  "clip_id": "clip_6164fc20987a0c59be12ce0f",
+  "decisions": [
+    {
+      "id": "cue_a6e6ad432cb770755d8619d3",
+      "text": "この子かわいいね",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "none",
+        "spans": [
+          {
+            "start": 3,
+            "end": 7,
+            "color": "pink",
+            "emphasis": true
+          }
+        ],
+        "zoom_target": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      },
+      "status": "adopted"
+    },
+    {
+      "id": "cue_9cb1bb5cef5223d4d0bc138d",
+      "text": "それは残念だったね",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "punch_in",
+        "spans": [
+          {
+            "start": 3,
+            "end": 5,
+            "color": "cyan",
+            "emphasis": true
+          }
+        ],
+        "zoom_target": {
+          "x": 0.85,
+          "y": 0.25
+        }
+      },
+      "status": "adopted"
+    },
+    {
+      "id": "cue_2df574cd8b69c8d01e005bda",
+      "text": "この子かわいいね",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "slow_in",
+        "spans": [
+          {
+            "start": 3,
+            "end": 7,
+            "color": "pink",
+            "emphasis": true
+          }
+        ],
+        "zoom_target": {
+          "x": 0.15,
+          "y": 0.75
+        }
+      },
+      "status": "adopted"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "schema": "clipbeta/1",
+  "kind": "edit-plan",
+  "clip_id": "clip_6164fc20987a0c59be12ce0f",
+  "source_id": "src_cf9f0406e7d8028962fdf278",
+  "range_start_ms": 0,
+  "range_end_ms": 10000,
+  "timebase": "clip-relative-ms",
+  "operations": [
+    {
+      "id": "cue_a6e6ad432cb770755d8619d3",
+      "start_ms": 0,
+      "end_ms": 3000,
+      "text": "この子かわいいね",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "none",
+        "spans": [
+          {
+            "start": 3,
+            "end": 7,
+            "color": "pink",
+            "emphasis": true
+          }
+        ],
+        "zoom_target": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      }
+    },
+    {
+      "id": "cue_9cb1bb5cef5223d4d0bc138d",
+      "start_ms": 3000,
+      "end_ms": 6000,
+      "text": "それは残念だったね",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "punch_in",
+        "spans": [
+          {
+            "start": 3,
+            "end": 5,
+            "color": "cyan",
+            "emphasis": true
+          }
+        ],
+        "zoom_target": {
+          "x": 0.85,
+          "y": 0.25
+        }
+      }
+    },
+    {
+      "id": "cue_2df574cd8b69c8d01e005bda",
+      "start_ms": 6000,
+      "end_ms": 10000,
+      "text": "この子かわいいね",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "slow_in",
+        "spans": [
+          {
+            "start": 3,
+            "end": 7,
+            "color": "pink",
+            "emphasis": true
+          }
+        ],
+        "zoom_target": {
+          "x": 0.15,
+          "y": 0.75
+        }
+      }
+    }
+  ],
+  "revision_id": "rev_88fb5fc5648c1dac0182eb7c"
+}

@@ -1,0 +1,99 @@
+{
+  "schema": "clipbeta/1",
+  "kind": "proposal",
+  "source_id": "src_cf9f0406e7d8028962fdf278",
+  "clip_id": "clip_6164fc20987a0c59be12ce0f",
+  "backend": "rules-v1",
+  "media_duration_ms": 15000,
+  "range_start_ms": 0,
+  "range_end_ms": 10000,
+  "items": [
+    {
+      "id": "cue_a6e6ad432cb770755d8619d3",
+      "source_start_ms": 0,
+      "source_end_ms": 3000,
+      "start_ms": 0,
+      "end_ms": 3000,
+      "original_text": "この子かわいいね",
+      "text": "この子かわいいね",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "none",
+        "spans": [
+          {
+            "start": 3,
+            "end": 7,
+            "color": "pink",
+            "emphasis": true
+          }
+        ],
+        "zoom_target": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      },
+      "reason": "Literal keyword match; no semantic AI",
+      "status": "pending"
+    },
+    {
+      "id": "cue_9cb1bb5cef5223d4d0bc138d",
+      "source_start_ms": 3000,
+      "source_end_ms": 6000,
+      "start_ms": 3000,
+      "end_ms": 6000,
+      "original_text": "それは残念だったね",
+      "text": "それは残念だったね",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "punch_in",
+        "spans": [
+          {
+            "start": 3,
+            "end": 5,
+            "color": "cyan",
+            "emphasis": true
+          }
+        ],
+        "zoom_target": {
+          "x": 0.85,
+          "y": 0.25
+        }
+      },
+      "reason": "Literal keyword match; no semantic AI",
+      "status": "pending"
+    },
+    {
+      "id": "cue_2df574cd8b69c8d01e005bda",
+      "source_start_ms": 6000,
+      "source_end_ms": 10000,
+      "start_ms": 6000,
+      "end_ms": 10000,
+      "original_text": "この子かわいいね",
+      "text": "この子かわいいね",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "slow_in",
+        "spans": [
+          {
+            "start": 3,
+            "end": 7,
+            "color": "pink",
+            "emphasis": true
+          }
+        ],
+        "zoom_target": {
+          "x": 0.15,
+          "y": 0.75
+        }
+      },
+      "reason": "Literal keyword match; no semantic AI",
+      "status": "pending"
+    }
+  ]
+}
