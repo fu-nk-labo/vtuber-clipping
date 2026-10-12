@@ -1,0 +1,244 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; media-src 'self' blob:; frame-src 'self'; object-src 'none'; base-uri 'none'"><title>ClipBeta ローカル切り抜き</title>
+<style>body{font:16px system-ui;background:#101725;color:#eef2fb;margin:auto;max-width:1200px;padding:24px}h1{margin-bottom:6px}p,small{color:#abb9d1}section{background:#1c273b;padding:20px;border-radius:14px;margin:18px 0}label{display:block;margin:12px 0}input,select,button,textarea{font:inherit;padding:9px;border-radius:6px;border:1px solid #65738d;background:#111b2d;color:inherit}input[type=text],textarea{width:min(90%,600px)}button{cursor:pointer;background:#335daa;margin:4px}button:disabled{opacity:.45;cursor:wait}video{width:100%;max-height:480px;background:#000}iframe{width:100%;height:750px;border:0;border-radius:10px}.row{display:flex;gap:16px;flex-wrap:wrap}.card{border:1px solid #54657f;padding:14px;margin:12px 0;border-radius:8px}.error{color:#ffaaaa}progress{width:100%}a{color:#9ec1ff}#status{white-space:pre-wrap}.hidden{display:none}</style>
+<h1>ClipBeta <small>ローカル切り抜き</small></h1><p>動画 → 自動文字起こし → 文脈から候補 → 字幕・演出の確認 → MP4保存</p>
+<section><h2>1. 動画とAIの設定</h2><p>文字起こし・候補選択・書き出しはこのPCで行います。Twitchから取得するときだけTwitchへ接続します。選んだローカル動画は作業フォルダーにコピーします。モデルや追加パッケージは事前に用意してください。自動インストールは行いません。</p>
+<p>Twitch取得β · 実環境検証待ち</p><label>Twitch VOD / チャンネルURL <input id="twitchURL" type="text" placeholder="https://www.twitch.tv/videos/123456789" maxlength="2048"></label>
+<button id="checkTwitch">VOD一覧を取得</button><p id="twitchStatus" role="status">利用許可のある公開済みVODを選んでください。追加パッケージyt-dlpが必要です。ログイン・Cookie・サブスク限定動画・ライブ取得には対応しません。一覧への掲載は取得可能の保証ではありません。</p><div id="archives"></div><p id="mediaReady" role="status"></p>
+<label>動画 <input id="videoFile" type="file" accept=".mp4,.m4v,.mov,.mkv,.webm,.avi"></label>
+<details><summary>AI設定（最初に設定）</summary>
+<label>faster-whisperモデルのフォルダー <input id="whisper" type="text" placeholder="C:\Models\faster-whisper-small"></label>
+<div class="row"><label>ASR実行 <select id="device"><option value="cpu">CPU / int8</option><option value="cuda">NVIDIA GPU / float16</option></select></label><label><input id="fallback" type="checkbox"> GPU失敗時にCPUで再実行してよい</label></div>
+<label>言語 <select id="language"><option value="ja">日本語</option><option value="en">English</option></select></label>
+<label>ゲーム名・人名・用語（カンマ区切り） <input id="glossary" type="text" maxlength="2000"></label>
+<label>候補選びのローカルLLM <select id="backend"><option value="ollama">Ollama（127.0.0.1:11434）</option><option value="llama_cpp">llama.cpp（127.0.0.1:8080）</option></select></label>
+<label>起動済み / インストール済みモデル名 <input id="model" type="text" value="qwen3:4b"></label>
+<p>Ollamaはクラウド機能を無効にして起動してください。ASRとLLMは順番に処理します。候補の面白さや文字起こしの正確さは保証されません。</p></details>
+<details><summary>既存字幕を使う（自動文字起こしを省略）</summary><label>SRT / JSON <input id="transcriptFile" type="file" accept=".srt,.json"></label></details>
+<button id="analyze">解析を開始</button><button id="cancel" disabled>処理を中止</button><progress id="progress" value="0" max="1"></progress><div id="status" role="status">動画を選択してください</div></section>
+<section id="previewSection" class="hidden"><h2>2. 候補を確認</h2><video id="source" controls preload="metadata"></video><p id="analysisWarnings" class="error"></p><div id="candidates"></div></section>
+<section id="reviewSection" class="hidden"><h2>3. 字幕・演出を編集</h2><button id="back">候補へ戻る</button><p>字幕ごとに採用・却下を決めてください。開始・終了時刻を最大60秒の範囲で変更できます。「範囲を適用」で字幕レビューを読み直すため、保存していない字幕編集と前の書き出し表示はクリアされます。</p><div class="row"><label>開始（秒） <input id="rangeStart" type="number" min="0" step="0.001"></label><label>終了（秒） <input id="rangeEnd" type="number" min="0" step="0.001"></label></div><button id="applyRange">範囲を適用</button><p id="rangeStatus" role="status"></p><label>出力サイズ <select id="resolution"><option value="1280x720">1280 × 720</option><option value="1920x1080">1920 × 1080</option><option value="640x360">640 × 360（軽量）</option></select></label><label>日本語フォント（空欄なら自動検出） <input id="font" type="text" placeholder="C:\Windows\Fonts\meiryo.ttc"></label><label>太字フォント（空欄なら自動検出） <input id="boldFont" type="text" placeholder="C:\Windows\Fonts\meiryob.ttc"></label><iframe id="review" title="字幕と演出のレビュー"></iframe></section>
+<section id="outputSection" class="hidden"><h2>4. 完成動画</h2><video id="output" controls></video><p><a id="download">MP4を保存</a> · <button id="savePlan">編集JSONを保存</button></p></section>
+<script>
+'use strict';
+/** @typedef {'archives'|'download'|'analysis'|'render'} JobKind */
+/** @typedef {{start_ms:number,end_ms:number}} ClipRange */
+const token='__SESSION_TOKEN__',$=id=>document.getElementById(id);
+const JOB_KINDS=new Set(['archives','download','analysis','render']);
+let generation=0,activeJob=null,busy=false,analysisJob=null,selectedCandidate=null,finalPlan=null;
+/** @type {JobKind|null} */ let activeKind=null;
+/** @type {ClipRange|null} */ let selectedRange=null;
+let mediaAsset=null,inputMode='local',mediaDurationMs=0,cancelRequested=false;
+let archiveButtons=[],candidateButtons=[],archiveRevision=0;
+const mediaURL=id=>'/media?id='+encodeURIComponent(id)+'&token='+encodeURIComponent(token);
+function status(text,error=false){$('status').textContent=text;$('status').className=error?'error':''}
+function setBusy(value){
+  busy=value;
+  for(const id of ['analyze','videoFile','transcriptFile','checkTwitch','twitchURL','applyRange','rangeStart','rangeEnd','whisper','model','device','fallback','language','glossary','backend','resolution','font','boldFont'])$(id).disabled=value;
+  $('cancel').disabled=!value;
+  for(const choice of archiveButtons)choice.button.disabled=value||!choice.available;
+  for(const button of candidateButtons)button.disabled=value;
+}
+async function api(path,data){
+  const r=await fetch(path,{method:data===undefined?'GET':'POST',headers:{'X-Clipbeta-Token':token,...(data===undefined?{}:{'Content-Type':'application/json'})},...(data===undefined?{}:{body:JSON.stringify(data)})});
+  const value=await r.json();if(!r.ok)throw Error(value.error||'処理に失敗しました');return value;
+}
+async function upload(file,kind){
+  const r=await fetch('/api/import?kind='+kind+'&name='+encodeURIComponent(file.name),{method:'POST',headers:{'X-Clipbeta-Token':token},body:file});
+  const value=await r.json();if(!r.ok)throw Error(value.error||'コピーに失敗しました');return value;
+}
+function checkOperation(g){if(g!==generation)throw Error('操作が変更されました');if(cancelRequested)throw Error('処理を中止しました')}
+async function poll(id,g){
+  for(;;){
+    if(g!==generation)return null;
+    const job=await api('/api/status?id='+encodeURIComponent(id));if(g!==generation)return null;
+    if(!JOB_KINDS.has(job.kind)||job.kind!==activeKind)throw Error('ジョブの種類が一致しません');
+    const fraction=Number(job.progress?.progress);$('progress').value=Number.isFinite(fraction)?Math.max(0,Math.min(1,fraction)):0;
+    const message=job.progress?.message||job.progress?.stage||job.state;status(message);
+    if(activeKind==='archives'||activeKind==='download')$('twitchStatus').textContent=message;
+    if(job.state==='complete')return job.result;
+    if(job.state==='cancelled')throw Error('処理を中止しました');
+    if(job.state==='error')throw Error(job.error||'処理に失敗しました');
+    if(!['running','cancelling'].includes(job.state))throw Error('不明なジョブ状態です');
+    await new Promise(resolve=>setTimeout(resolve,500));
+  }
+}
+async function runJob(path,payload,kind,g){
+  checkOperation(g);activeKind=kind;
+  const job=await api(path,payload);
+  if(typeof job.id!=='string'||!job.id)throw Error('ジョブIDがありません');
+  activeJob=job.id;if(kind==='analysis')analysisJob=job.id;
+  if(cancelRequested)await api('/api/cancel',{id:job.id});
+  const result=await poll(job.id,g);if(activeJob===job.id)activeJob=null;
+  checkOperation(g);return result;
+}
+function clearOutput(){
+  $('output').pause?.();finalPlan=null;$('output').removeAttribute('src');$('output').load?.();
+  $('download').removeAttribute('href');$('outputSection').classList.add('hidden');
+}
+function reset(){
+  clearOutput();$('source').pause?.();$('source').removeAttribute('src');$('source').load?.();
+  generation++;analysisJob=null;selectedCandidate=null;selectedRange=null;mediaDurationMs=0;
+  candidateButtons=[];$('analysisWarnings').textContent='';$('candidates').replaceChildren();$('review').removeAttribute('src');
+  for(const id of ['previewSection','reviewSection','outputSection'])$(id).classList.add('hidden');
+  $('rangeStart').value='';$('rangeEnd').value='';$('rangeStatus').textContent='';$('progress').value=0;
+  status('解析を開始できます');
+}
+function clearArchives(){archiveRevision++;archiveButtons=[];$('archives').replaceChildren()}
+function clearMedia(){mediaAsset=null;$('mediaReady').textContent=''}
+function useMedia(asset){
+  if(!asset||typeof asset.id!=='string'||!asset.id)throw Error('取得した動画IDがありません');
+  mediaAsset=asset;$('mediaReady').textContent='準備済み: '+(asset.name||'動画')+'。AI設定を確認して「解析を開始」で続けられます';
+}
+function analysisSettings(){return {
+  whisper_model_dir:$('whisper').value.trim()||null,ollama_model:$('model').value.trim(),llm_backend:$('backend').value,
+  device:$('device').value,compute_type:$('device').value==='cpu'?'int8':'float16',allow_cpu_fallback:$('fallback').checked,
+  language:$('language').value,glossary:$('glossary').value.split(',').map(s=>s.trim()).filter(Boolean),
+}}
+function finishOperation(g){if(g===generation){activeJob=null;activeKind=null;cancelRequested=false;setBusy(false)}}
+function operationError(error,g,twitch=false){if(g===generation){status(error.message,true);if(twitch)$('twitchStatus').textContent=error.message+'。取得できない場合は、利用許可のあるローカル動画を選択してください'}}
+function displayAnalysis(result,id){
+  if(!result||typeof result.media_id!=='string'||!Array.isArray(result.candidates)||!Number.isSafeInteger(result.duration_ms)||result.duration_ms<=0)throw Error('解析結果の形式が不正です');
+  analysisJob=id;mediaDurationMs=result.duration_ms;
+  $('analysisWarnings').textContent=Array.isArray(result.metadata?.warnings)?result.metadata.warnings.map(String).join('\n'):'';
+  if(!mediaAsset)useMedia({id:result.media_id,kind:'video',name:'解析した動画'});
+  $('source').src=mediaURL(result.media_id);$('previewSection').classList.remove('hidden');showCandidates(result.candidates);
+  status(result.candidates.length?'候補を選び、範囲と字幕・演出を確認してください':'条件を満たす候補がありませんでした。字幕やモデル設定を確認してください');
+}
+async function analyzeMedia(asset,g,config,transcriptFile){
+  checkOperation(g);let transcript=null;
+  if(transcriptFile){status('字幕をこのPCの作業フォルダーにコピーしています');transcript=await upload(transcriptFile,'transcript');checkOperation(g)}
+  const result=await runJob('/api/analyze',{media_id:asset.id,transcript_id:transcript?.id,config},'analysis',g);
+  if(result)displayAnalysis(result,analysisJob);
+}
+$('videoFile').onchange=()=>{if(busy)return;reset();clearMedia();clearArchives();inputMode='local'};
+$('transcriptFile').onchange=()=>{if(!busy)reset()};
+$('twitchURL').oninput=()=>{if(busy)return;reset();clearMedia();clearArchives();inputMode='twitch';$('videoFile').value='';$('twitchStatus').textContent='「VOD一覧を取得」でこのURLを確認してください'};
+$('analyze').onclick=async()=>{
+  if(busy)return;
+  const file=inputMode==='local'?$('videoFile').files[0]:null;
+  if(!mediaAsset&&!file){status(inputMode==='twitch'?'先にVODを選んで取得してください':'動画を選択してください',true);return}
+  const config=analysisSettings(),transcriptFile=$('transcriptFile').files[0];reset();const g=generation;
+  cancelRequested=false;activeKind='analysis';setBusy(true);
+  try{
+    let asset=mediaAsset;
+    if(!asset){status('動画をこのPCの作業フォルダーにコピーしています');asset=await upload(file,'video');checkOperation(g);useMedia(asset)}
+    await analyzeMedia(asset,g,config,transcriptFile);
+  }catch(error){operationError(error,g)}finally{finishOperation(g)}
+};
+$('checkTwitch').onclick=async()=>{
+  if(busy)return;const url=$('twitchURL').value.trim();
+  if(!url){$('twitchStatus').textContent='Twitch URLを入力してください';return}
+  reset();clearMedia();clearArchives();inputMode='twitch';$('videoFile').value='';const g=generation;
+  cancelRequested=false;setBusy(true);
+  try{const result=await runJob('/api/twitch',{url},'archives',g);if(result)showArchives(result)}
+  catch(error){operationError(error,g,true)}finally{finishOperation(g)}
+};
+function showArchives(result){
+  if(!result||!Array.isArray(result.archives))throw Error('VOD一覧の形式が不正です');
+  clearArchives();const revision=archiveRevision;
+  $('twitchStatus').textContent=result.archives.length?'VODを選ぶと取得して解析します。アクセス拒否や未対応形式の場合は停止します':'表示できるアーカイブがありません';
+  for(const archive of result.archives){
+    const card=document.createElement('div');card.className='card';
+    const title=document.createElement('h3');title.textContent=archive.title||'Twitch VOD';
+    const finite=Number.isSafeInteger(archive.duration_ms)&&archive.duration_ms>0&&archive.is_live!==true;
+    const vodURL=typeof archive.url==='string'&&/^https:\/\/(?:www\.)?twitch\.tv\/videos\/[1-9][0-9]{0,19}\/?$/i.test(archive.url);
+    const available=finite&&vodURL;
+    const details=document.createElement('p');details.textContent=finite?(archive.duration_ms/1000).toFixed(1)+'秒 · 取得可否は選択後に確認します':'ライブ・長さ未確認の動画は選択できません';
+    const button=document.createElement('button');button.textContent='このVODを取得して解析';button.disabled=busy||!available;
+    button.onclick=()=>{if(busy||!available||revision!==archiveRevision)return;return acquireArchive(archive)};
+    archiveButtons.push({button,available});card.append(title,details,button);$('archives').append(card);
+  }
+}
+async function acquireArchive(archive){
+  const config=analysisSettings(),transcriptFile=$('transcriptFile').files[0];
+  reset();clearMedia();inputMode='twitch';const g=generation;cancelRequested=false;setBusy(true);
+  try{
+    const asset=await runJob('/api/twitch/acquire',{url:archive.url},'download',g);
+    if(!asset)return;useMedia(asset);$('twitchStatus').textContent='動画を取得しました。ローカル解析に進みます';
+    checkOperation(g);await analyzeMedia(asset,g,config,transcriptFile);
+  }catch(error){operationError(error,g,activeKind==='download')}finally{finishOperation(g)}
+}
+function validRange(startMs,endMs){
+  if(!Number.isSafeInteger(startMs)||!Number.isSafeInteger(endMs)||startMs<0||endMs<=startMs||endMs>mediaDurationMs||endMs-startMs>60000)
+    throw Error('開始・終了は動画内の時刻で、0秒より長く60秒以内にしてください');
+  return {start_ms:startMs,end_ms:endMs};
+}
+function inputRange(){
+  const start=$('rangeStart').value.trim(),end=$('rangeEnd').value.trim();
+  if(!start||!end||!Number.isFinite(Number(start))||!Number.isFinite(Number(end)))throw Error('開始・終了を秒数で入力してください');
+  return validRange(Math.round(Number(start)*1000),Math.round(Number(end)*1000));
+}
+function sameRange(a,b){return a&&b&&a.start_ms===b.start_ms&&a.end_ms===b.end_ms}
+function loadReview(range){
+  clearOutput();selectedRange={...range};$('rangeStart').value=(range.start_ms/1000).toFixed(3);$('rangeEnd').value=(range.end_ms/1000).toFixed(3);
+  $('rangeStatus').textContent=((range.end_ms-range.start_ms)/1000).toFixed(3)+'秒の範囲を適用しました。字幕を確認してください';
+  $('source').currentTime=range.start_ms/1000;
+  $('review').src='/api/review?job='+encodeURIComponent(analysisJob)+'&candidate='+encodeURIComponent(selectedCandidate)+'&start_ms='+range.start_ms+'&end_ms='+range.end_ms+'&token='+encodeURIComponent(token);
+  $('reviewSection').classList.remove('hidden');$('reviewSection').scrollIntoView({behavior:'smooth'});
+}
+function showCandidates(items){
+  const ownerJob=analysisJob;candidateButtons=[];$('candidates').replaceChildren();
+  for(const candidate of items){
+    const card=document.createElement('div');card.className='card';
+    const title=document.createElement('h3');title.textContent=candidate.title||'候補';
+    const detail=document.createElement('p');detail.textContent=(candidate.start_ms/1000).toFixed(1)+'–'+(candidate.end_ms/1000).toFixed(1)+'秒 · '+(candidate.reason||'');
+    const evidence=document.createElement('p');evidence.textContent=(candidate.evidence||[]).map(item=>item.quote).join(' / ');
+    const button=document.createElement('button');button.textContent='この候補を編集';button.disabled=busy;
+    button.onclick=()=>{if(busy||ownerJob!==analysisJob)return;try{const range=validRange(candidate.start_ms,candidate.end_ms);selectedCandidate=candidate.id;loadReview(range)}catch(error){status(error.message,true)}};
+    candidateButtons.push(button);card.append(title,detail,evidence,button);$('candidates').append(card);
+  }
+}
+$('applyRange').onclick=()=>{
+  if(busy||!selectedCandidate)return;
+  try{const range=inputRange();if(!sameRange(range,selectedRange))loadReview(range)}catch(error){$('rangeStatus').textContent=error.message;status(error.message,true)}
+};
+$('back').onclick=()=>{if(busy)return;selectedCandidate=null;selectedRange=null;$('review').removeAttribute('src');$('reviewSection').classList.add('hidden');$('previewSection').scrollIntoView({behavior:'smooth'})};
+$('cancel').onclick=async()=>{
+  if(!busy)return;cancelRequested=true;const id=activeJob,g=generation;
+  if(!id){status('中止を受け付けました。現在のコピー・要求が終了したら停止します');return}
+  try{await api('/api/cancel',{id});if(g===generation&&busy)status('中止しています。処理が止まるまでお待ちください')}catch(error){operationError(error,g)}
+};
+function displayOutput(result){
+  if(!result||typeof result.output_id!=='string'||!result.plan)throw Error('書き出し結果の形式が不正です');
+  finalPlan=result.plan;$('output').src=mediaURL(result.output_id);$('download').href=mediaURL(result.output_id)+'&download=1';
+  $('outputSection').classList.remove('hidden');$('outputSection').scrollIntoView({behavior:'smooth'});
+  status('MP4を書き出しました。作業フォルダーには編集用ファイルも残ります');
+}
+window.addEventListener('message',async event=>{
+  if(event.origin!==location.origin||event.source!==$('review').contentWindow||!selectedCandidate)return;
+  const data=event.data;
+  if(data?.analysis_job_id!==analysisJob||data?.candidate_id!==selectedCandidate||!sameRange(data?.range,selectedRange))return;
+  if(data.type==='clipbeta-seek'){
+    if(Number.isFinite(data.time)&&data.time>=0&&data.time<=mediaDurationMs/1000)$('source').currentTime=data.time;
+    return;
+  }
+  if(data.type!=='clipbeta-render'||busy)return;
+  try{if(!sameRange(inputRange(),selectedRange))throw Error('時刻を変更しました。「範囲を適用」して字幕を確認してください')}catch(error){status(error.message,true);return}
+  clearOutput();const g=++generation;cancelRequested=false;setBusy(true);
+  try{
+    const [width,height]=$('resolution').value.split('x').map(Number),options={width,height};
+    if($('font').value.trim())options.font_path=$('font').value.trim();if($('boldFont').value.trim())options.bold_font_path=$('boldFont').value.trim();
+    const result=await runJob('/api/render',{analysis_job_id:analysisJob,candidate_id:selectedCandidate,range:{...selectedRange},review:data.review,options},'render',g);
+    if(result)displayOutput(result);
+  }catch(error){operationError(error,g)}finally{finishOperation(g)}
+});
+$('savePlan').onclick=()=>{
+  if(!finalPlan)return;const url=URL.createObjectURL(new Blob([JSON.stringify(finalPlan,null,2)],{type:'application/json'}));
+  const link=document.createElement('a');link.href=url;link.download='edit-plan.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+async function reconnect(){
+  setBusy(true);const g=generation;cancelRequested=false;
+  try{
+    const current=(await api('/api/current')).job;if(!current)return;
+    if(!JOB_KINDS.has(current.kind))throw Error('再接続できないジョブの種類です');
+    activeJob=current.id;activeKind=current.kind;status('処理中のジョブに再接続しました');
+    if(cancelRequested)await api('/api/cancel',{id:current.id});
+    const result=await poll(current.id,g);checkOperation(g);if(!result)return;
+    if(current.kind==='analysis')displayAnalysis(result,current.id);
+    else if(current.kind==='render')displayOutput(result);
+    else if(current.kind==='archives'){inputMode='twitch';showArchives(result)}
+    else if(current.kind==='download'){inputMode='twitch';useMedia(result);status('動画の取得が完了しました。AI設定を確認し、「解析を開始」で続けてください')}
+  }catch(error){operationError(error,g,activeKind==='archives'||activeKind==='download')}finally{finishOperation(g)}
+}
+reconnect();
+</script></html>
