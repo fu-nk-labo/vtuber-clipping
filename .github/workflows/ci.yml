@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-noto-cjk
-          python -m pip install '.[render]'
+          python -m pip install '.[render,twitch]'
       - name: Validate source and behavior
         run: |
           python scripts/scan_public_tree.py
@@ -30,8 +30,26 @@ jobs:
           node tests/review_js_smoke.js
           node tests/intake_ui_smoke.js
           node tests/word_review_ui_smoke.js
+          node tests/standalone_ui_smoke.js
       - name: Smoke-test installed package outside checkout
         run: |
           cd "$(mktemp -d)"
           clipbeta --help
           clipbeta intake-demo --out intake.html
+  windows-core:
+    runs-on: windows-2025
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - run: python -m pip install .
+      - name: Validate Windows core and local HTTP app
+        run: |
+          python -m unittest discover -s tests -p test_engine.py -v
+          python -m unittest discover -s tests -p test_packaging.py -v
+          python -m unittest discover -s tests -p test_standalone.py -v
+          clipbeta --help
