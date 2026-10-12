@@ -1,0 +1,43 @@
+# Python / packaging
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+# Local runs, media, machine-specific manifests
+.local/
+media/
+output/
+outputs/
+preview*/
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.avi
+*.wav
+*.mp3
+*.zip
+*.whl
+*.log
+/tests/verification.txt
+/tests/flow-verification.txt
+/samples/review-preview.png
+# Secrets and account configuration (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+secrets*.json
+token*.json
+.aws/
+.ssh/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vtuber-clipping-beta"
+dynamic = ["version"]
+description = "Offline, reviewable caption edit plans and local video previews"
+authors = [{name = "FU-NK LABO"}]
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+dependencies = []
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Multimedia :: Video",
+]
+
+[project.urls]
+Homepage = "https://github.com/fu-nk-labo"
+Source = "https://github.com/fu-nk-labo/vtuber-clipping"
+Issues = "https://github.com/fu-nk-labo/vtuber-clipping/issues"
+
+[project.optional-dependencies]
+render = ["Pillow>=10,<13"]
+
+[project.scripts]
+clipbeta = "clipbeta.__main__:main"
+
+[tool.setuptools]
+packages = ["clipbeta"]
+
+[tool.setuptools.dynamic]
+version = {attr = "clipbeta.__version__"}
+
+[tool.setuptools.package-data]
+clipbeta = ["web/*.js", "data/*.srt"]
