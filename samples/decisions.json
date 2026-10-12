@@ -1,0 +1,61 @@
+{
+  "schema": "clipbeta/1",
+  "clip_id": "clip_c7e81f06716d8f27681d9647",
+  "decisions": [
+    {
+      "id": "cue_d3e7c4843185ffbe537c953f",
+      "text": "今日は架空のゲームで遊びます",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "none"
+      },
+      "status": "adopted"
+    },
+    {
+      "id": "cue_c255e9a38bba73e032ab5b57",
+      "text": "えっ、すごい！",
+      "style": {
+        "emphasis": true,
+        "color": "red",
+        "se": "surprise",
+        "zoom": "punch_in"
+      },
+      "status": "adopted"
+    },
+    {
+      "id": "cue_3483926635a9f84cdd16e5ad",
+      "text": "今の見た？",
+      "style": {
+        "emphasis": false,
+        "color": "cyan",
+        "se": "none",
+        "zoom": "slow_in"
+      },
+      "status": "adopted"
+    },
+    {
+      "id": "cue_bc0d1a9312e994d90442b3b3",
+      "text": "笑っちゃったwww",
+      "style": {
+        "emphasis": true,
+        "color": "yellow",
+        "se": "laugh",
+        "zoom": "none"
+      },
+      "status": "adopted"
+    },
+    {
+      "id": "cue_fb56624f3f454ba81592a4ef",
+      "text": "次は落ち着いて進めよう",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "none"
+      },
+      "status": "rejected"
+    }
+  ]
+}

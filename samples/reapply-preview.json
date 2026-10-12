@@ -1,0 +1,14 @@
+{
+  "kind": "adapter-preview-only",
+  "clip_id": "clip_c7e81f06716d8f27681d9647",
+  "create": [],
+  "update": [],
+  "unchanged": [
+    "cue_d3e7c4843185ffbe537c953f",
+    "cue_c255e9a38bba73e032ab5b57",
+    "cue_3483926635a9f84cdd16e5ad",
+    "cue_bc0d1a9312e994d90442b3b3"
+  ],
+  "remove_managed": [],
+  "note": "No media or editor was modified. A future adapter must scope IDs to its managed layer."
+}

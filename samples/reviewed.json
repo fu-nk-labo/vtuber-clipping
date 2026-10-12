@@ -1,0 +1,97 @@
+{
+  "schema": "clipbeta/1",
+  "kind": "proposal",
+  "source_id": "src_edc2ff856d9a349771201f9a",
+  "clip_id": "clip_c7e81f06716d8f27681d9647",
+  "backend": "rules-v1",
+  "media_duration_ms": 15000,
+  "range_start_ms": 1000,
+  "range_end_ms": 12000,
+  "items": [
+    {
+      "id": "cue_d3e7c4843185ffbe537c953f",
+      "source_start_ms": 0,
+      "source_end_ms": 2000,
+      "start_ms": 0,
+      "end_ms": 1000,
+      "original_text": "今日は架空のゲームで遊びます",
+      "text": "今日は架空のゲームで遊びます",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "none"
+      },
+      "reason": "Neutral; explicit no-op effects",
+      "status": "adopted"
+    },
+    {
+      "id": "cue_c255e9a38bba73e032ab5b57",
+      "source_start_ms": 2500,
+      "source_end_ms": 5000,
+      "start_ms": 1500,
+      "end_ms": 4000,
+      "original_text": "えっ、すごい！！",
+      "text": "えっ、すごい！",
+      "style": {
+        "emphasis": true,
+        "color": "red",
+        "se": "surprise",
+        "zoom": "punch_in"
+      },
+      "reason": "Excited reaction keyword",
+      "status": "adopted"
+    },
+    {
+      "id": "cue_3483926635a9f84cdd16e5ad",
+      "source_start_ms": 5000,
+      "source_end_ms": 7500,
+      "start_ms": 4000,
+      "end_ms": 6500,
+      "original_text": "今の見た？",
+      "text": "今の見た？",
+      "style": {
+        "emphasis": false,
+        "color": "cyan",
+        "se": "none",
+        "zoom": "slow_in"
+      },
+      "reason": "Question marker",
+      "status": "adopted"
+    },
+    {
+      "id": "cue_bc0d1a9312e994d90442b3b3",
+      "source_start_ms": 8000,
+      "source_end_ms": 11000,
+      "start_ms": 7000,
+      "end_ms": 10000,
+      "original_text": "笑っちゃったwww",
+      "text": "笑っちゃったwww",
+      "style": {
+        "emphasis": true,
+        "color": "yellow",
+        "se": "laugh",
+        "zoom": "none"
+      },
+      "reason": "Laughter keyword",
+      "status": "adopted"
+    },
+    {
+      "id": "cue_fb56624f3f454ba81592a4ef",
+      "source_start_ms": 11500,
+      "source_end_ms": 14000,
+      "start_ms": 10500,
+      "end_ms": 11000,
+      "original_text": "次は落ち着いて進めよう",
+      "text": "次は落ち着いて進めよう",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "none"
+      },
+      "reason": "Neutral; explicit no-op effects",
+      "status": "rejected"
+    }
+  ]
+}

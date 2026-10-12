@@ -1,0 +1,60 @@
+{
+  "schema": "clipbeta/1",
+  "kind": "edit-plan",
+  "clip_id": "clip_c7e81f06716d8f27681d9647",
+  "source_id": "src_edc2ff856d9a349771201f9a",
+  "range_start_ms": 1000,
+  "range_end_ms": 12000,
+  "timebase": "clip-relative-ms",
+  "operations": [
+    {
+      "id": "cue_d3e7c4843185ffbe537c953f",
+      "start_ms": 0,
+      "end_ms": 1000,
+      "text": "今日は架空のゲームで遊びます",
+      "style": {
+        "emphasis": false,
+        "color": "white",
+        "se": "none",
+        "zoom": "none"
+      }
+    },
+    {
+      "id": "cue_c255e9a38bba73e032ab5b57",
+      "start_ms": 1500,
+      "end_ms": 4000,
+      "text": "えっ、すごい！",
+      "style": {
+        "emphasis": true,
+        "color": "red",
+        "se": "surprise",
+        "zoom": "punch_in"
+      }
+    },
+    {
+      "id": "cue_3483926635a9f84cdd16e5ad",
+      "start_ms": 4000,
+      "end_ms": 6500,
+      "text": "今の見た？",
+      "style": {
+        "emphasis": false,
+        "color": "cyan",
+        "se": "none",
+        "zoom": "slow_in"
+      }
+    },
+    {
+      "id": "cue_bc0d1a9312e994d90442b3b3",
+      "start_ms": 7000,
+      "end_ms": 10000,
+      "text": "笑っちゃったwww",
+      "style": {
+        "emphasis": true,
+        "color": "yellow",
+        "se": "laugh",
+        "zoom": "none"
+      }
+    }
+  ],
+  "revision_id": "rev_55d934dd7d5d3abe504b0ed0"
+}
