@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "vtuber-clipping-beta"
 dynamic = ["version"]
-description = "Offline, reviewable caption edit plans and local video previews"
+description = "Local AI transcription, evidence-based clip review and video rendering"
 authors = [{name = "FU-NK LABO"}]
 readme = "README.md"
 requires-python = ">=3.10"
@@ -20,12 +20,13 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/fu-nk-labo"
 Source = "https://github.com/fu-nk-labo/vtuber-clipping"
 Issues = "https://github.com/fu-nk-labo/vtuber-clipping/issues"
 
 [project.optional-dependencies]
 render = ["Pillow>=10,<13"]
+twitch = ["yt-dlp==2026.8.19"]
+local-ai = ["Pillow>=10,<13", "faster-whisper==1.2.1", "av==16.0.1"]
 
 [project.scripts]
 clipbeta = "clipbeta.__main__:main"
@@ -37,4 +38,4 @@ packages = ["clipbeta"]
 version = {attr = "clipbeta.__version__"}
 
 [tool.setuptools.package-data]
-clipbeta = ["web/*.js", "data/*.srt"]
+clipbeta = ["web/*.js", "web/*.html", "data/*.srt"]

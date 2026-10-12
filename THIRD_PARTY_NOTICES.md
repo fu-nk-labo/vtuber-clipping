@@ -12,3 +12,14 @@ No third-party binaries, font files, model weights, or source libraries are vend
 The source includes original synthetic subtitle fixtures and code that generates synthetic video/test tones. No third-party stream footage, music, or commercial sound-effect assets are included. Ownership of a local recording does not automatically grant rights to every embedded third-party work; users remain responsible for authorized use.
 
 Local validation environment: Python 3.12.14, Pillow 12.3.0, FFmpeg 7.1.5, system-installed Noto Sans CJK. This is a tested combination, not a claim of exhaustive platform compatibility.
+
+## Optional local AI
+
+- [faster-whisper](https://github.com/SYSTRAN/faster-whisper): MIT; [CTranslate2](https://github.com/OpenNMT/CTranslate2): MIT. Optional wheels and their transitive libraries have their own notices.
+- [PyAV](https://github.com/PyAV-Org/PyAV): BSD-3-Clause; its wheels include FFmpeg components. Review the installed wheel notices before redistribution.
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) and [Ollama](https://github.com/ollama/ollama): MIT, separately installed optional runtimes.
+- [Systran faster-whisper tiny](https://huggingface.co/Systran/faster-whisper-tiny): MIT model card. [Qwen3 models](https://huggingface.co/Qwen/Qwen3-0.6B-GGUF): Apache-2.0. No weights are redistributed here.
+
+The source license does not replace model licenses or third-party dependency terms.
+
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp): optional public Twitch acquisition metadata extractor, under its [Unlicense and component notices](https://github.com/yt-dlp/yt-dlp/blob/master/LICENSE). No executable is bundled. Acquisition uses a restricted transport and local remuxing, not browser cookies or account authentication.

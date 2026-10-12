@@ -5,7 +5,7 @@ This project uses the MIT License. Contributions should be original work or clea
 ## Development
 
 1. Use Python 3.10+ and a virtual environment.
-2. Install the project locally; use the `render` extra only when renderer tests are needed.
+2. Install the project locally; use the `render` extra for renderer tests and `twitch` for the pinned optional extractor tests. Real model smoke tests require separately prepared local weights; ordinary tests use deterministic fakes.
 3. Run the Python and Node commands in README before proposing changes.
 4. Add tests for validation errors, Unicode boundaries, repeated actions, cancellation, stale results, no-op effects, and output overwrite protection.
 
@@ -27,3 +27,5 @@ Include a minimal synthetic input, expected behavior, command, OS, Python/FFmpeg
 ## Maintainer release gate
 
 Confirm the release scope, version, MIT license/copyright attribution, and third-party notices. Run the staged-tree scan, packaging smoke test, and complete test suite. Verify CI on the exact published commit before calling a release verified.
+
+Treat URL acquisition as an explicit network operation. Preserve host/IP/redirect checks, cookie and credential refusal, active cancellation, byte/time limits, local-only remuxing, and clear access-denial failures. Never turn a failing real acquisition into a mocked success.

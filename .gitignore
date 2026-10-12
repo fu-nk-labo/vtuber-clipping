@@ -41,3 +41,8 @@ token*.json
 .ssh/
 .DS_Store
 Thumbs.db
+
+# Standalone local imports and model weights
+clipbeta-work/
+*.gguf
+*.bin

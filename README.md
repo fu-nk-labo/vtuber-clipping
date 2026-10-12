@@ -1,12 +1,15 @@
-# VTuber Clipping Beta · FU-NK LABO
+# VTuber Clipping Beta
 
-字幕からレビュー可能な編集プランを作り、ローカル動画へ字幕・ズーム・合成SEを反映する試作です。
-
-開発名義: [FU-NK LABO / fu-nk-labo](https://github.com/fu-nk-labo)。
-ソース: [fu-nk-labo/vtuber-clipping](https://github.com/fu-nk-labo/vtuber-clipping)。
+ローカル動画の自動文字起こし、文脈に基づく候補選び、字幕・演出レビュー、MP4保存まで行う試作です。Premiere不要。作者: FU-NK LABO。
 
 MITライセンスで利用できます。Copyright (c) 2026 fu-nk-labo。
 [LICENSE](LICENSE) と [第三者依存関係の注意事項](THIRD_PARTY_NOTICES.md) を確認してください。
+
+## ローカルAI画面で使う（0.5.1）
+
+`python -m pip install ".[local-ai]"` の後、`clipbeta serve --workspace clipbeta-work`。
+モデル・FFmpeg・日本語フォントは別途必要です。Twitch機能は追加で`python -m pip install ".[twitch]"`が必要です。アプリが勝手にモデルをダウンロードすることはありません。
+[Windowsの起動手順・モデル準備・制限](docs/LOCAL_AI.md)を確認してください。ワンクリックEXEはまだありません。
 
 ## できること
 
@@ -17,8 +20,10 @@ MITライセンスで利用できます。Copyright (c) 2026 fu-nk-labo。
 - 検証済みJSONプラン、安定ID、再適用差分プレビュー
 - FFmpegでローカルMP4をレンダリング。既存出力は上書きしない
 
-Twitch URL入力画面は**合成データのモック**です。API接続、動画取得、音声認識、AIによる見どころ検出、Premiere連携は未実装です。
+`intake-demo`は**合成データのモック**です。別のローカルアプリには任意の公開Twitch取得アダプターを実装していますが、クラウド検証環境のDNS制約で実動画取得は未検証です。限定公開／サブスク限定／進行中配信には対応しません。[取得範囲と検証状況](docs/TWITCH_URL_STATUS.md)。Premiere連携はありません。
 実配信や実アカウント情報はサンプルに含みません。
+
+検証済み: 合成英語音声から実ローカルAIを経由し、ローカルHTTP画面のバックエンドでMP4まで作成。小型モデルの切りどころには不自然な箇所があり、人による確認・区間調整が必要です。日本語の合成音声ではsmallを追加検証し、文字誤り率1.4%でした（表記差を含む1サンプル）。自動候補の理由・音声末尾には確認が必要です。[日本語検証](docs/JAPANESE_VALIDATION.md)。日本語実配信、対象Windows機、実ブラウザ画面は未検証。[詳細](docs/VERIFICATION_0_5.md)。
 
 ## クイックスタート
 
